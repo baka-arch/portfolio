@@ -2,7 +2,8 @@ name: Deploy portfolio to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -17,12 +18,16 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     env:
       GITHUB_PAGES: 'true'
-    steps:
-      - uses: actions/checkout@v4
 
-      - uses: oven-sh/setup-bun@v2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
@@ -32,19 +37,30 @@ jobs:
       - name: Build
         run: bun run build
 
-      - name: SPA fallback (copy index.html to 404.html)
+      - name: Verify build
+        run: |
+          echo "=== dist ==="
+          find dist -maxdepth 2 -type f -print
+          echo "=== index.html ==="
+          cat dist/index.html
+
+      - name: SPA fallback
         run: cp dist/index.html dist/404.html
 
-      - uses: actions/upload-pages-artifact@v3
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: ./dist
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
-      - id: deployment
+      - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
