@@ -61,8 +61,8 @@ export const PROJECTS_DATA: Project[] = [
     ],
     architectureNotes:
       'Constructed with an asynchronous queue worker pattern using FastAPI. Incoming PDF/image payloads are vectorized, cross-referenced with learned typography embeddings, and evaluated by an Ollama-backed verification agent returning structured JSON audits.',
-    githubUrl: 'https://github.com/baka-arch/docsentinel-fraud-detection',
-    liveDemoUrl: 'https://github.com/baka-arch/docsentinel-fraud-detection',
+    githubUrl: 'https://github.com/arena672/DocSentinel',
+    liveDemoUrl: 'https://github.com/arena672/DocSentinel',
     featured: true,
     interactiveType: 'docsentinel',
     colorGradient: {
@@ -184,8 +184,8 @@ export const PROJECTS_DATA: Project[] = [
     ],
     architectureNotes:
       'Implements Object Pooling for track meshes and obstacles to eliminate GC stutter during gameplay. Decoupled input system via events for seamless cross-platform controls.',
-    githubUrl: 'https://github.com/atulnigam/cuberun-unity-3d',
-    liveDemoUrl: 'https://github.com/atulnigam/cuberun-unity-3d',
+    githubUrl: 'https://www.linkedin.com/posts/atul-nigam-4980a2320_gamedevelopment-indiegame-pcgame-activity-7312191266803335168-zPyr',
+    liveDemoUrl: 'https://www.linkedin.com/posts/atul-nigam-4980a2320_gamedevelopment-indiegame-pcgame-activity-7312191266803335168-zPyr',
     featured: true,
     interactiveType: 'cuberun',
     colorGradient: {

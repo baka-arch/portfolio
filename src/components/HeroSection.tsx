@@ -14,14 +14,18 @@ import {
   Activity,
   Code2,
   Trophy,
+  FileText,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { soundFX } from '../utils/soundEffects';
+import { ScrambleText } from './ScrambleText';
 
 interface HeroSectionProps {
   onExploreClick: () => void;
+  onOpenResume: () => void;
 }
 
-export const HeroSection: React.FC<HeroSectionProps> = ({ onExploreClick }) => {
+export const HeroSection: React.FC<HeroSectionProps> = ({ onExploreClick, onOpenResume }) => {
   // Typewriter effect state
   const [textIndex, setTextIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState('');
@@ -80,6 +84,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onExploreClick }) => {
   };
 
   const triggerConfettiCelebration = () => {
+    soundFX.playClick();
     confetti({
       particleCount: 50,
       spread: 70,
@@ -99,7 +104,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onExploreClick }) => {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/90 border border-cyan-500/30 backdrop-blur-md shadow-[0_0_20px_rgba(6,182,212,0.15)] text-xs text-slate-300 font-mono mb-6"
+        onMouseEnter={() => soundFX.playHover()}
+        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/90 border border-cyan-500/30 backdrop-blur-md shadow-[0_0_20px_rgba(6,182,212,0.15)] text-xs text-slate-300 font-mono mb-6 cursor-default"
       >
         <GraduationCap className="w-4 h-4 text-cyan-400" />
         <span>IIT Delhi</span>
@@ -118,7 +124,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onExploreClick }) => {
         <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-100">
           Hello, I'm{' '}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-indigo-400 drop-shadow-sm">
-            {PERSONAL_INFO.name}
+            <ScrambleText text={PERSONAL_INFO.name} />
           </span>
         </h1>
 
@@ -148,6 +154,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onExploreClick }) => {
           id="hero-magnetic-explore-btn"
           style={{ x: magneticX, y: magneticY }}
           onMouseMove={handleMouseMove}
+          onMouseEnter={() => soundFX.playHover()}
           onMouseLeave={handleMouseLeave}
           onClick={triggerConfettiCelebration}
           className="group relative px-7 py-3.5 rounded-xl font-semibold text-sm text-slate-950 bg-gradient-to-r from-cyan-400 via-teal-300 to-cyan-300 hover:from-cyan-300 hover:to-teal-200 shadow-[0_0_25px_rgba(6,182,212,0.5)] transition-all duration-200 flex items-center gap-2 cursor-pointer"
@@ -157,10 +164,26 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onExploreClick }) => {
           <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </motion.button>
 
+        {/* Resume HUD Viewer Button */}
+        <button
+          id="hero-resume-btn"
+          onClick={() => {
+            soundFX.playClick();
+            onOpenResume();
+          }}
+          onMouseEnter={() => soundFX.playHover()}
+          className="px-6 py-3.5 rounded-xl font-medium text-sm text-cyan-300 bg-slate-900/90 hover:bg-slate-850 border border-cyan-500/30 hover:border-cyan-400 backdrop-blur-md transition-all flex items-center gap-2 cursor-pointer shadow-sm"
+        >
+          <FileText className="w-4 h-4 text-cyan-400" />
+          <span>Resume / CV</span>
+        </button>
+
         {/* Contact / Email Button */}
         <a
           id="hero-email-btn"
           href={`mailto:${PERSONAL_INFO.email}`}
+          onMouseEnter={() => soundFX.playHover()}
+          onClick={() => soundFX.playClick()}
           className="px-6 py-3.5 rounded-xl font-medium text-sm text-slate-200 bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 hover:border-cyan-500/40 backdrop-blur-md transition-all flex items-center gap-2"
         >
           <Mail className="w-4 h-4 text-cyan-400" />
@@ -175,6 +198,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onExploreClick }) => {
             target="_blank"
             rel="noopener noreferrer"
             title="GitHub Profile"
+            onMouseEnter={() => soundFX.playHover()}
+            onClick={() => soundFX.playClick()}
             className="p-3 rounded-xl bg-slate-900/90 text-slate-400 hover:text-slate-100 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 transition"
           >
             <Github className="w-4 h-4" />
@@ -185,6 +210,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onExploreClick }) => {
             target="_blank"
             rel="noopener noreferrer"
             title="LinkedIn Profile"
+            onMouseEnter={() => soundFX.playHover()}
+            onClick={() => soundFX.playClick()}
             className="p-3 rounded-xl bg-slate-900/90 text-slate-400 hover:text-cyan-400 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 transition"
           >
             <Linkedin className="w-4 h-4" />
@@ -195,6 +222,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onExploreClick }) => {
             target="_blank"
             rel="noopener noreferrer"
             title="LeetCode Profile"
+            onMouseEnter={() => soundFX.playHover()}
+            onClick={() => soundFX.playClick()}
             className="p-3 rounded-xl bg-slate-900/90 text-slate-400 hover:text-amber-400 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 transition"
           >
             <Code2 className="w-4 h-4" />
@@ -205,6 +234,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onExploreClick }) => {
             target="_blank"
             rel="noopener noreferrer"
             title="Codeforces Profile"
+            onMouseEnter={() => soundFX.playHover()}
+            onClick={() => soundFX.playClick()}
             className="p-3 rounded-xl bg-slate-900/90 text-slate-400 hover:text-blue-400 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 transition"
           >
             <Trophy className="w-4 h-4" />
@@ -223,6 +254,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onExploreClick }) => {
           <div
             key={i}
             id={`hero-stat-${i}`}
+            onMouseEnter={() => soundFX.playHover()}
             className="p-4 rounded-xl bg-slate-950/70 border border-slate-800/80 backdrop-blur-md text-left transition hover:border-cyan-500/30 hover:bg-slate-900/80"
           >
             <div className="text-xl sm:text-2xl font-bold font-mono text-cyan-300">
@@ -240,7 +272,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onExploreClick }) => {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.9, duration: 1 }}
         className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-slate-500 text-xs font-mono cursor-pointer hover:text-cyan-400 transition"
-        onClick={onExploreClick}
+        onClick={() => {
+          soundFX.playClick();
+          onExploreClick();
+        }}
       >
         <span>Scroll to Explore</span>
         <ArrowDown className="w-3.5 h-3.5 animate-bounce text-cyan-400" />

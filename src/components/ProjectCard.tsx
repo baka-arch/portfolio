@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'motion/react';
 import { Project } from '../types/portfolio';
-import { Github, ExternalLink, Sparkles, ArrowRight, ShieldCheck, Activity, Cpu, Gamepad2, Terminal } from 'lucide-react';
+import { Github, Linkedin, ExternalLink, Sparkles, ArrowRight, ShieldCheck, Activity, Cpu, Gamepad2, Terminal } from 'lucide-react';
 
 interface ProjectCardProps {
   project: Project;
@@ -170,10 +170,10 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelect, ind
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                title="View GitHub Repository"
+                title={project.id === 'cuberun' ? 'View on LinkedIn' : 'View GitHub Repository'}
                 className="p-1.5 rounded-lg bg-slate-900 text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition"
               >
-                <Github className="w-4 h-4" />
+                {project.id === 'cuberun' ? <Linkedin className="w-4 h-4 text-cyan-400" /> : <Github className="w-4 h-4" />}
               </a>
             </div>
           </div>

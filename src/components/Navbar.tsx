@@ -9,19 +9,29 @@ import {
   Linkedin,
   Mail,
   FileText,
-  GraduationCap,
+  Volume2,
+  VolumeX,
+  Command,
+  Search,
 } from 'lucide-react';
 import { PERSONAL_INFO } from '../data/portfolioData';
+import { soundFX } from '../utils/soundEffects';
 
 interface NavbarProps {
-  activeSection?: string;
+  onOpenCommandPalette: () => void;
+  onOpenResume: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = () => {
+export const Navbar: React.FC<NavbarProps> = ({
+  onOpenCommandPalette,
+  onOpenResume,
+}) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [audioEnabled, setAudioEnabled] = useState(false);
 
   useEffect(() => {
+    setAudioEnabled(soundFX.isEnabled());
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
@@ -29,8 +39,14 @@ export const Navbar: React.FC<NavbarProps> = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleToggleAudio = () => {
+    const newState = soundFX.toggle();
+    setAudioEnabled(newState);
+  };
+
   const navLinks = [
-    { label: 'Projects', href: '#projects' },
+    { label: 'DNA & Focus', href: '#engineering-dna' },
+    { label: 'Projects & Demos', href: '#projects' },
     { label: 'Skills & Stack', href: '#skills' },
     { label: 'Deep Tech & Bio', href: '#bio-tech-fusion' },
     { label: 'Milestones', href: '#experience' },
@@ -51,6 +67,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
         <a
           href="#hero"
           id="navbar-brand"
+          onClick={() => soundFX.playClick()}
           className="flex items-center gap-2.5 group cursor-pointer"
         >
           <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-indigo-600 p-[1px] shadow-[0_0_15px_rgba(6,182,212,0.4)]">
@@ -67,12 +84,14 @@ export const Navbar: React.FC<NavbarProps> = () => {
         </a>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-1 p-1 rounded-full bg-slate-900/60 border border-slate-800/80 backdrop-blur-md">
+        <nav className="hidden lg:flex items-center gap-1 p-1 rounded-full bg-slate-900/60 border border-slate-800/80 backdrop-blur-md">
           {navLinks.map((link) => (
             <a
               key={link.label}
               href={link.href}
               id={`nav-link-${link.label.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
+              onMouseEnter={() => soundFX.playHover()}
+              onClick={() => soundFX.playClick()}
               className="px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-300 hover:text-cyan-300 hover:bg-slate-800/80 transition-all duration-200"
             >
               {link.label}
@@ -80,36 +99,93 @@ export const Navbar: React.FC<NavbarProps> = () => {
           ))}
         </nav>
 
-        {/* Action Buttons */}
-        <div className="hidden sm:flex items-center gap-3">
-          <a
-            id="nav-github-btn"
-            href={PERSONAL_INFO.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2 rounded-lg bg-slate-900/80 text-slate-300 hover:text-white border border-slate-800 hover:border-slate-700 transition"
-            title="GitHub Profile"
+        {/* Action Controls: Command Palette, Sound Toggle, Resume & Contact */}
+        <div className="hidden sm:flex items-center gap-2">
+          {/* Quick Command Palette Button */}
+          <button
+            id="nav-command-palette-btn"
+            onClick={() => {
+              soundFX.playClick();
+              onOpenCommandPalette();
+            }}
+            onMouseEnter={() => soundFX.playHover()}
+            title="Open Command Palette (Cmd + K)"
+            className="px-2.5 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/40 text-xs font-mono text-slate-300 flex items-center gap-1.5 transition"
           >
-            <Github className="w-4 h-4" />
-          </a>
+            <Search className="w-3.5 h-3.5 text-cyan-400" />
+            <span className="text-[11px] text-slate-400 hidden xl:inline">Search</span>
+            <kbd className="px-1.5 py-0.5 rounded bg-slate-950 border border-slate-800 text-[10px] text-cyan-300">
+              ⌘K
+            </kbd>
+          </button>
 
+          {/* Sound FX Audio Toggle */}
+          <button
+            id="nav-audio-toggle-btn"
+            onClick={handleToggleAudio}
+            title={audioEnabled ? 'Mute Web Audio SFX' : 'Enable Web Audio SFX'}
+            className={`p-2 rounded-xl border transition flex items-center gap-1.5 ${
+              audioEnabled
+                ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 shadow-[0_0_10px_rgba(6,182,212,0.3)]'
+                : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-slate-200'
+            }`}
+          >
+            {audioEnabled ? (
+              <>
+                <Volume2 className="w-4 h-4 text-cyan-400" />
+                <span className="flex items-end gap-0.5 h-3">
+                  <span className="w-0.5 h-3 bg-cyan-400 animate-pulse" />
+                  <span className="w-0.5 h-1.5 bg-cyan-400 animate-pulse" />
+                  <span className="w-0.5 h-2.5 bg-cyan-400 animate-pulse" />
+                </span>
+              </>
+            ) : (
+              <VolumeX className="w-4 h-4" />
+            )}
+          </button>
+
+          {/* Resume HUD Button */}
+          <button
+            id="nav-resume-btn"
+            onClick={() => {
+              soundFX.playClick();
+              onOpenResume();
+            }}
+            onMouseEnter={() => soundFX.playHover()}
+            className="px-3 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/40 text-xs font-mono text-slate-300 hover:text-cyan-300 flex items-center gap-1.5 transition"
+          >
+            <FileText className="w-3.5 h-3.5 text-cyan-400" />
+            <span>Resume</span>
+          </button>
+
+          {/* Connect CTA */}
           <a
             id="nav-contact-cta"
             href="#contact"
-            className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-950 bg-gradient-to-r from-cyan-400 to-teal-300 hover:opacity-95 shadow-[0_0_15px_rgba(6,182,212,0.4)] transition cursor-pointer"
+            onClick={() => soundFX.playClick()}
+            onMouseEnter={() => soundFX.playHover()}
+            className="px-4 py-1.5 rounded-xl text-xs font-semibold text-slate-950 bg-gradient-to-r from-cyan-400 to-teal-300 hover:opacity-95 shadow-[0_0_15px_rgba(6,182,212,0.4)] transition cursor-pointer"
           >
             Connect
           </a>
         </div>
 
         {/* Mobile Menu Toggle */}
-        <button
-          id="mobile-menu-toggle-btn"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden p-2 rounded-lg bg-slate-900 text-slate-300 border border-slate-800"
-        >
-          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+        <div className="flex items-center gap-2 lg:hidden">
+          <button
+            onClick={() => onOpenCommandPalette()}
+            className="p-2 rounded-lg bg-slate-900 text-cyan-400 border border-slate-800 text-xs font-mono"
+          >
+            ⌘K
+          </button>
+          <button
+            id="mobile-menu-toggle-btn"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 rounded-lg bg-slate-900 text-slate-300 border border-slate-800"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu Drawer */}
@@ -120,14 +196,17 @@ export const Navbar: React.FC<NavbarProps> = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-slate-950/95 border-b border-slate-800 backdrop-blur-xl px-4 py-6 space-y-4"
+            className="lg:hidden bg-slate-950/95 border-b border-slate-800 backdrop-blur-xl px-4 py-6 space-y-4"
           >
             <div className="flex flex-col space-y-2">
               {navLinks.map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={() => {
+                    soundFX.playClick();
+                    setMobileMenuOpen(false);
+                  }}
                   className="px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-slate-900 hover:text-cyan-300 font-medium"
                 >
                   {link.label}
@@ -136,24 +215,16 @@ export const Navbar: React.FC<NavbarProps> = () => {
             </div>
 
             <div className="pt-4 border-t border-slate-800 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <a
-                  href={PERSONAL_INFO.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-lg bg-slate-900 text-slate-300"
-                >
-                  <Github className="w-4 h-4" />
-                </a>
-                <a
-                  href={PERSONAL_INFO.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-lg bg-slate-900 text-slate-300"
-                >
-                  <Linkedin className="w-4 h-4" />
-                </a>
-              </div>
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenResume();
+                }}
+                className="px-3 py-2 rounded-lg bg-slate-900 text-xs font-mono text-cyan-300 border border-slate-800 flex items-center gap-1.5"
+              >
+                <FileText className="w-4 h-4 text-cyan-400" />
+                <span>Resume HUD</span>
+              </button>
 
               <a
                 href="#contact"
